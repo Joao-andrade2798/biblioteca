@@ -5,6 +5,7 @@ import com.andrade.bibliotecaApi.dto.AutorDTO;
 import com.andrade.bibliotecaApi.entity.Autor;
 import com.andrade.bibliotecaApi.service.AutorService;
 import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,11 +54,9 @@ public class AutorController {
             (@Valid
              @RequestParam(required = false) String id,
              @RequestParam(required = false) String nome) {
-        try {
+
         AutorDTO autores = autorService.excluirAutor(id, nome);
-            return ResponseEntity.ok(new ApiResponse<>(true,"Autor excluído com sucesso",autores));
-        } catch (Exception e) {
-        return ResponseEntity.ok(new ApiResponse<>(false,"Autor informado não localizado!",null));
-        }
+        return ResponseEntity.ok(new ApiResponse<>(true, "Autor excluído com sucesso", autores));
+
     }
 }
