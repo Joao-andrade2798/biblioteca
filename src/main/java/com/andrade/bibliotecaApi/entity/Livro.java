@@ -27,15 +27,11 @@ public class Livro {
 
     @NotNull(message = "O autor é obrigatório!")
     @ManyToOne
-    @JoinColumn(name = "autor_id", nullable = false)
+    @JoinColumn(name = "id_autor", nullable = false)
     private Autor autor;
 
     public Livro() {
         this.id = UUID.randomUUID().toString();
-    }
-
-    public Livro(String id) {
-        this.id = id;
     }
 
     public Livro(String titulo, Integer ano, String genero, Autor autor) {

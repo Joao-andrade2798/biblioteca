@@ -23,14 +23,11 @@ public class Autor {
     private String nacionalidade;
 
     public Autor() {
-    }
-
-    public Autor(String id) {
         this.id = UUID.randomUUID().toString();
     }
 
     public Autor(String nome, String nacionalidade) {
-        this.id = UUID.randomUUID().toString();
+        this();
         this.nome = nome;
         this.nacionalidade = nacionalidade;
     }
