@@ -2,58 +2,66 @@ package com.andrade.bibliotecaApi.service;
 
 import com.andrade.bibliotecaApi.dto.ApiResponse;
 import com.andrade.bibliotecaApi.dto.AutorDTO;
+import com.andrade.bibliotecaApi.dto.ExemplarDTO;
 import com.andrade.bibliotecaApi.dto.LivroDTO;
 import com.andrade.bibliotecaApi.entity.Autor;
 import com.andrade.bibliotecaApi.entity.Livro;
+import com.andrade.bibliotecaApi.exceptions.BadRequestException;
 import com.andrade.bibliotecaApi.repository.AutorRepository;
 import com.andrade.bibliotecaApi.repository.LivroRepository;
+import jakarta.persistence.NoResultException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Nodes.collect;
 
 @Service
 public class LivroService {
+    private static final Logger log = LoggerFactory.getLogger(LivroService.class);
     @Autowired
     LivroRepository livroRepository;
     @Autowired
     AutorRepository autorRepository;
 
-    public ResponseEntity<ApiResponse<Livro>> cadastrarLivro(String titulo, int ano, String genero, String nomeAutor) {
+    public ResponseEntity<ApiResponse<LivroDTO>> cadastrarLivro(String titulo, int ano, String genero, String nomeAutor) {
         Autor autor = autorRepository.findByNome(nomeAutor)
-                .orElse(null);
+                .orElseThrow(() -> new NoResultException("Autor informado não localizado para cadastro do livro"));
 
-        if (autor == null){
-            return ResponseEntity.ok(new ApiResponse<>(false,  "Autor informado não localizado para cadastro do livro ", null));
-        } else {
-        Livro livro = new Livro();
-        livro.setTitulo(titulo);
-        livro.setGenero(genero);
-        livro.setAno(ano);
-        livro.setAutor(autor);
-        livroRepository.save(livro);
-        return ResponseEntity.ok(new ApiResponse<>(true,  "Livro cadastrado com sucesso! ", livro));
-        }
+        livroRepository.save(new Livro(titulo, ano, genero, autor));
+        LivroDTO dto = new LivroDTO(titulo, ano, genero, new AutorDTO(autor.getNome(), autor.getNacionalidade()));
+
+        return ResponseEntity.ok(new ApiResponse<>(true,  "Livro cadastrado com sucesso! ", dto));
     }
 
-    public Livro consultaLivro(String id, String titulo) {
-        if (id != null && !id.isBlank()) {
-            return livroRepository.findById(id).orElseThrow(() -> new RuntimeException("Autor não encontrado"));
+    public LivroDTO consultaLivro(String id, String titulo) {
+        if ((id != null && !id.isBlank()) || (titulo != null && !titulo.isBlank())) {
+            Livro livro = livroRepository.findById(id != null ? id : titulo).orElseThrow(() -> new NoResultException("Autor não encontrado"));
+
+            AutorDTO autorDto = new AutorDTO(livro.getAutor().getNome(), livro.getAutor().getNacionalidade());
+            return new LivroDTO(livro.getTitulo(), livro.getAno(), livro.getGenero(), autorDto);
         }
-        if (titulo != null && !titulo.isBlank()) {
-            return livroRepository.findByTitulo(titulo).orElseThrow(() -> new RuntimeException("Autor não encontrado"));
-        }
-        throw new RuntimeException("Necessário informar ao menos um parâmetro para consulta");
+
+        throw new BadRequestException("Necessário informar ao menos um parâmetro para consulta");
     }
 
-    public ResponseEntity<ApiResponse<List<Livro>>> listaLivros(){
-        List<Livro> livros = livroRepository.findAll();
-        if (!livros.isEmpty()){
-            return ResponseEntity.ok(new ApiResponse<>(true,  "Lista de Livros:", livros));
-        } else {
-            return ResponseEntity.ok(new ApiResponse<>(false,  "Não existe livros cadastrados no sistema!", null));
-        }
+    public ResponseEntity<ApiResponse<List<LivroDTO>>> listaLivros() {
+        List<LivroDTO> livros = livroRepository.findAll().stream()
+                .map(livro -> new LivroDTO(
+                        livro.getTitulo(),
+                        livro.getAno(),
+                        livro.getGenero(),
+                        new AutorDTO(livro.getAutor().getNome(), livro.getGenero())
+                ))
+                .toList();
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "Lista de Livros:", livros));
     }
 
     public LivroDTO excluirLivros(String id, String titulo){
@@ -68,5 +76,12 @@ public class LivroService {
         livroRepository.delete(livro);
         return new LivroDTO(livro.getTitulo(), livro.getAno(), livro.getGenero(),
                new AutorDTO(livro.getAutor().getNome(), livro.getAutor().getNacionalidade()));
+    }
+
+    public List<ExemplarDTO> cadastroExemplar(ExemplarDTO exemplarDTO, Integer quantidade) {
+        List<ExemplarDTO> retorno = new ArrayList<>();
+        for (int i = 0; i < quantidade; i++) {
+
+        }
     }
 }
