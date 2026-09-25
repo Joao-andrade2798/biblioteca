@@ -1,6 +1,6 @@
 package com.andrade.bibliotecaApi.entity;
 
-import com.andrade.bibliotecaApi.StatusExemplarEnum;
+import com.andrade.bibliotecaApi.enums.StatusExemplarEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

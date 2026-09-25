@@ -1,4 +1,4 @@
-package com.andrade.bibliotecaApi;
+package com.andrade.bibliotecaApi.enums;
 
 public enum StatusExemplarEnum {
     DISPONIVEL(1, "Disponível"),
