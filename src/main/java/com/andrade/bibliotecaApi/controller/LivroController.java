@@ -1,16 +1,12 @@
 package com.andrade.bibliotecaApi.controller;
 
-import com.andrade.bibliotecaApi.dto.ApiResponse;
-import com.andrade.bibliotecaApi.dto.ExemplarDTO;
-import com.andrade.bibliotecaApi.dto.LivroDTO;
-import com.andrade.bibliotecaApi.entity.Autor;
-import com.andrade.bibliotecaApi.entity.Livro;
+import com.andrade.bibliotecaApi.dto.response.ApiResponse;
+import com.andrade.bibliotecaApi.dto.response.ExemplarDTO;
+import com.andrade.bibliotecaApi.dto.response.LivroDTO;
 import com.andrade.bibliotecaApi.service.LivroService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -48,19 +44,18 @@ public class LivroController {
     public ResponseEntity<ApiResponse<LivroDTO>> exclusaoLivros
             (@Valid @RequestParam(required = false) String id,
              @RequestParam(required = false) String titulo) {
-        try {
             LivroDTO livros = livroService.excluirLivros(id, titulo);
+
             return ResponseEntity.ok(new ApiResponse<>(true, "Livro excluído com sucesso", livros));
-        } catch (Exception e) {
-            return ResponseEntity.ok(new ApiResponse<>(false, "Livro informado não localizado!", null));
-        }
     }
 
     @Validated
     @PostMapping("/cadastro/exemplar")
     public ResponseEntity<ApiResponse<List<ExemplarDTO>>> cadastroExemplares(
-            @Valid @RequestBody ExemplarDTO exemplar,
+            @Valid @RequestBody String idLivro,
             @RequestParam @Min(1) Integer quantidade) {
+        List<ExemplarDTO> exemplarDTO = livroService.cadastroExemplar(idLivro, quantidade);
 
+        return ResponseEntity.ok(new ApiResponse<>(true, "Exemplares cadastrados com sucesso", exemplarDTO));
     }
 }

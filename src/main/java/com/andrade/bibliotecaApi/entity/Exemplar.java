@@ -1,31 +1,37 @@
 package com.andrade.bibliotecaApi.entity;
 
 import com.andrade.bibliotecaApi.enums.StatusExemplarEnum;
+import com.andrade.bibliotecaApi.repository.ExemplarRepository;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.ManyToAny;
+import org.hibernate.generator.EventType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
+@Entity
+@Table(name = "exemplar")
 public class Exemplar {
     @Id
     private String id;
 
-    @Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "codigo", sequenceName = "exemplar_codigo", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "codigo")
+    @Column(unique = true, nullable = false, insertable = false, updatable = false)
+    @Generated(event = EventType.INSERT)
     private Integer codigo;
 
     @NotBlank(message = "Livro é obrigatório")
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_livro", nullable = false)
     private Livro livro;
 
@@ -34,11 +40,10 @@ public class Exemplar {
     private StatusExemplarEnum status;
 
     protected Exemplar() {
-        this.id = UUID.randomUUID().toString();
     }
 
     public Exemplar(Livro livro, StatusExemplarEnum status) {
-        this();
+        this.id = UUID.randomUUID().toString();
         this.status = status;
         this.livro = livro;
     }

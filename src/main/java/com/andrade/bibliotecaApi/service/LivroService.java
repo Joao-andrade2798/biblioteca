@@ -1,13 +1,17 @@
 package com.andrade.bibliotecaApi.service;
 
-import com.andrade.bibliotecaApi.dto.ApiResponse;
-import com.andrade.bibliotecaApi.dto.AutorDTO;
-import com.andrade.bibliotecaApi.dto.ExemplarDTO;
-import com.andrade.bibliotecaApi.dto.LivroDTO;
+import com.andrade.bibliotecaApi.dto.response.ApiResponse;
+import com.andrade.bibliotecaApi.dto.response.AutorDTO;
+import com.andrade.bibliotecaApi.dto.response.ExemplarDTO;
+import com.andrade.bibliotecaApi.dto.response.LivroDTO;
 import com.andrade.bibliotecaApi.entity.Autor;
+import com.andrade.bibliotecaApi.entity.Exemplar;
 import com.andrade.bibliotecaApi.entity.Livro;
+import com.andrade.bibliotecaApi.enums.StatusExemplarEnum;
 import com.andrade.bibliotecaApi.exceptions.BadRequestException;
+import com.andrade.bibliotecaApi.exceptions.UnprocessableException;
 import com.andrade.bibliotecaApi.repository.AutorRepository;
+import com.andrade.bibliotecaApi.repository.ExemplarRepository;
 import com.andrade.bibliotecaApi.repository.LivroRepository;
 import jakarta.persistence.NoResultException;
 import org.slf4j.Logger;
@@ -18,9 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Nodes.collect;
 
 @Service
 public class LivroService {
@@ -29,6 +30,8 @@ public class LivroService {
     LivroRepository livroRepository;
     @Autowired
     AutorRepository autorRepository;
+    @Autowired
+    ExemplarRepository exemplarRepository;
 
     public ResponseEntity<ApiResponse<LivroDTO>> cadastrarLivro(String titulo, int ano, String genero, String nomeAutor) {
         Autor autor = autorRepository.findByNome(nomeAutor)
@@ -42,7 +45,7 @@ public class LivroService {
 
     public LivroDTO consultaLivro(String id, String titulo) {
         if ((id != null && !id.isBlank()) || (titulo != null && !titulo.isBlank())) {
-            Livro livro = livroRepository.findById(id != null ? id : titulo).orElseThrow(() -> new NoResultException("Autor não encontrado"));
+            Livro livro = livroRepository.findById(id != null ? id : titulo).orElseThrow(() -> new NoResultException("Livro não encontrado"));
 
             AutorDTO autorDto = new AutorDTO(livro.getAutor().getNome(), livro.getAutor().getNacionalidade());
             return new LivroDTO(livro.getTitulo(), livro.getAno(), livro.getGenero(), autorDto);
@@ -66,22 +69,33 @@ public class LivroService {
 
     public LivroDTO excluirLivros(String id, String titulo){
         Livro livro = null;
+
         if (id != null && !id.isBlank()) {
-            livro = livroRepository.findById(id).orElseThrow(() -> new RuntimeException("Autor não encontrado"));
+            livro = livroRepository.findById(id).orElseThrow(() -> new NoResultException("Livro não encontrado"));
         } else if (titulo != null && !titulo.isBlank()) {
-            livro = livroRepository.findByTitulo(titulo).orElseThrow(() -> new RuntimeException("Autor não encontrado"));
+            livro = livroRepository.findByTitulo(titulo).orElseThrow(() -> new NoResultException("Livro não encontrado"));
         } else {
-            throw new RuntimeException("Necessário informar ao menos um parâmetro para consulta");
+            throw new BadRequestException("Necessário informar ao menos um parâmetro para consulta");
         }
+
         livroRepository.delete(livro);
         return new LivroDTO(livro.getTitulo(), livro.getAno(), livro.getGenero(),
                new AutorDTO(livro.getAutor().getNome(), livro.getAutor().getNacionalidade()));
     }
 
-    public List<ExemplarDTO> cadastroExemplar(ExemplarDTO exemplarDTO, Integer quantidade) {
-        List<ExemplarDTO> retorno = new ArrayList<>();
-        for (int i = 0; i < quantidade; i++) {
+    public List<ExemplarDTO> cadastroExemplar(String idLivro, Integer quantidade) {
+        Livro livro = livroRepository.findById(idLivro)
+                .orElseThrow(() -> new UnprocessableException("Livro não encontrado"));
 
+        LivroDTO livroDTO = new LivroDTO(livro.getTitulo(), livro.getAno(), livro.getGenero(), new AutorDTO(livro.getAutor().getNome(), livro.getAutor().getNacionalidade()));
+
+        List<ExemplarDTO> retorno = new ArrayList<>();
+
+        for (int i = 0; i < quantidade; i++) {
+            Exemplar exemplar = exemplarRepository.save(new Exemplar(livro, StatusExemplarEnum.DISPONIVEL));
+            retorno.add(new ExemplarDTO(exemplar.getCodigo(), livroDTO, exemplar.getStatus()));
         }
+
+        return retorno;
     }
 }
