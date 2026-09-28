@@ -1,4 +1,4 @@
-package com.andrade.bibliotecaApi.dto;
+package com.andrade.bibliotecaApi.dto.response;
 
 public class ApiResponse<T> {
     private boolean sucesso;

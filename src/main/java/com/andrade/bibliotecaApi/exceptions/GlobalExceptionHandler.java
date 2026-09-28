@@ -1,11 +1,12 @@
 package com.andrade.bibliotecaApi.exceptions;
 
-import com.andrade.bibliotecaApi.dto.ApiResponse;
+import com.andrade.bibliotecaApi.dto.response.ApiResponse;
 import jakarta.persistence.NoResultException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,6 +22,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleNotFound(NoResultException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse<>(false, exception.getLocalizedMessage(), null));
+    }
+
+    @ExceptionHandler(UnprocessableException.class)
+    public ResponseEntity<ApiResponse<Object>> handleUnprocessable(UnprocessableException exception){
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(new ApiResponse<>(false, exception.getLocalizedMessage(), null));
     }
 }

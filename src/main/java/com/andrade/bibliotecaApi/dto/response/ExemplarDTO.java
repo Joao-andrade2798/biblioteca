@@ -1,14 +1,13 @@
-package com.andrade.bibliotecaApi.dto;
+package com.andrade.bibliotecaApi.dto.response;
 
-import com.andrade.bibliotecaApi.entity.Livro;
 import com.andrade.bibliotecaApi.enums.StatusExemplarEnum;
 
 public class ExemplarDTO {
     private Integer codigo;
-    private Livro livro;
+    private LivroDTO livro;
     private StatusExemplarEnum statusExemplarEnum;
 
-    public ExemplarDTO(Integer codigo, Livro livro, StatusExemplarEnum statusExemplarEnum) {
+    public ExemplarDTO(Integer codigo, LivroDTO livro, StatusExemplarEnum statusExemplarEnum) {
         this.codigo = codigo;
         this.livro = livro;
         this.statusExemplarEnum = statusExemplarEnum;
@@ -18,11 +17,11 @@ public class ExemplarDTO {
         return codigo;
     }
 
-    public Livro getLivro() {
+    public LivroDTO getLivro() {
         return livro;
     }
 
-    public void setLivro(Livro livro) {
+    public void setLivro(LivroDTO livro) {
         this.livro = livro;
     }
 
