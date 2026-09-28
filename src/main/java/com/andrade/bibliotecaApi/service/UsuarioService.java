@@ -1,7 +1,6 @@
 package com.andrade.bibliotecaApi.service;
 
-import com.andrade.bibliotecaApi.dto.AutorDTO;
-import com.andrade.bibliotecaApi.dto.UsuarioDTO;
+import com.andrade.bibliotecaApi.dto.response.UsuarioDTO;
 import com.andrade.bibliotecaApi.entity.Usuario;
 import com.andrade.bibliotecaApi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

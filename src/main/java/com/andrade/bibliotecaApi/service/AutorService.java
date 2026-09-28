@@ -1,6 +1,6 @@
 package com.andrade.bibliotecaApi.service;
 
-import com.andrade.bibliotecaApi.dto.AutorDTO;
+import com.andrade.bibliotecaApi.dto.response.AutorDTO;
 import com.andrade.bibliotecaApi.entity.Autor;
 import com.andrade.bibliotecaApi.exceptions.BadRequestException;
 import com.andrade.bibliotecaApi.repository.AutorRepository;

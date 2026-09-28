@@ -1,9 +1,7 @@
 package com.andrade.bibliotecaApi.controller;
 
-import com.andrade.bibliotecaApi.dto.ApiResponse;
-import com.andrade.bibliotecaApi.dto.AutorDTO;
-import com.andrade.bibliotecaApi.dto.UsuarioDTO;
-import com.andrade.bibliotecaApi.entity.Autor;
+import com.andrade.bibliotecaApi.dto.response.ApiResponse;
+import com.andrade.bibliotecaApi.dto.response.UsuarioDTO;
 import com.andrade.bibliotecaApi.entity.Usuario;
 import com.andrade.bibliotecaApi.service.UsuarioService;
 import jakarta.validation.Valid;
