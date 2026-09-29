@@ -23,7 +23,7 @@ public class AutorController {
     @PostMapping("/cadastro")
     public ResponseEntity<ApiResponse<Autor>> cadastroAutor(@Valid @RequestBody AutorDTO autorDto ) {
         try {
-            Autor autor = autorService.cadastrarAutor(autorDto.getNome(), autorDto.getNacionalidade());
+            Autor autor = autorService.cadastrarAutor(autorDto.nome(), autorDto.nacionalidade());
             ApiResponse<Autor> resposta = new ApiResponse<>(true,"Autor cadastrado com sucesso!",autor);
             return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
 

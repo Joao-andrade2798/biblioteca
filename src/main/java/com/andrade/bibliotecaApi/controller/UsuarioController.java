@@ -22,7 +22,7 @@ public class UsuarioController {
     @PostMapping("/cadastro")
     public ResponseEntity<ApiResponse<Usuario>> cadastroUsuario(@Valid @RequestBody UsuarioDTO usuarioDto) {
         try {
-            Usuario usuario = usuarioService.cadastrarUsuario(usuarioDto.getNome(), usuarioDto.getEmail(), usuarioDto.getTelefone());
+            Usuario usuario = usuarioService.cadastrarUsuario(usuarioDto.nome(), usuarioDto.email(), usuarioDto.telefone());
             ApiResponse<Usuario> resposta = new ApiResponse<>(true, "Usuário cadastrado com sucesso!", usuario);
             return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
         } catch (Exception e) {

@@ -1,11 +1,13 @@
 package com.andrade.bibliotecaApi.controller;
 
+import com.andrade.bibliotecaApi.dto.request.ExemplarRequest;
 import com.andrade.bibliotecaApi.dto.response.ApiResponse;
 import com.andrade.bibliotecaApi.dto.response.ExemplarDTO;
 import com.andrade.bibliotecaApi.dto.response.LivroDTO;
 import com.andrade.bibliotecaApi.service.LivroService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,7 +25,7 @@ public class LivroController {
 
     @PostMapping("/cadastro")
     public ResponseEntity<ApiResponse<LivroDTO>> cadastrarLivro(@Valid @RequestBody LivroDTO livroDTO) {
-        return livroService.cadastrarLivro(livroDTO.getTitulo(), livroDTO.getAno(), livroDTO.getGenero(), livroDTO.getAutor().getNome());
+        return livroService.cadastrarLivro(livroDTO.titulo(), livroDTO.ano(), livroDTO.genero(), livroDTO.autor().nome());
     }
 
     @GetMapping("/consulta")
@@ -49,12 +51,10 @@ public class LivroController {
             return ResponseEntity.ok(new ApiResponse<>(true, "Livro excluído com sucesso", livros));
     }
 
-    @Validated
+    @Valid
     @PostMapping("/cadastro/exemplar")
-    public ResponseEntity<ApiResponse<List<ExemplarDTO>>> cadastroExemplares(
-            @Valid @RequestBody String idLivro,
-            @RequestParam @Min(1) Integer quantidade) {
-        List<ExemplarDTO> exemplarDTO = livroService.cadastroExemplar(idLivro, quantidade);
+    public ResponseEntity<ApiResponse<List<ExemplarDTO>>> cadastroExemplares(ExemplarRequest request) {
+        List<ExemplarDTO> exemplarDTO = livroService.cadastroExemplar(request);
 
         return ResponseEntity.ok(new ApiResponse<>(true, "Exemplares cadastrados com sucesso", exemplarDTO));
     }
