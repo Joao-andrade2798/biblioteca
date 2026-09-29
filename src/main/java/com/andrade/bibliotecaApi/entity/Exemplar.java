@@ -1,7 +1,6 @@
 package com.andrade.bibliotecaApi.entity;
 
 import com.andrade.bibliotecaApi.enums.StatusExemplarEnum;
-import com.andrade.bibliotecaApi.repository.ExemplarRepository;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,13 +9,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.ManyToAny;
 import org.hibernate.generator.EventType;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
@@ -30,12 +26,12 @@ public class Exemplar {
     @Generated(event = EventType.INSERT)
     private Integer codigo;
 
-    @NotBlank(message = "Livro é obrigatório")
+    @NotNull(message = "Livro é obrigatório")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_livro", nullable = false)
     private Livro livro;
 
-    @NotBlank(message = "Status é obrigatório")
+    @NotNull(message = "Status é obrigatório")
     @Enumerated(EnumType.STRING)
     private StatusExemplarEnum status;
 
@@ -44,8 +40,8 @@ public class Exemplar {
 
     public Exemplar(Livro livro, StatusExemplarEnum status) {
         this.id = UUID.randomUUID().toString();
-        this.status = status;
         this.livro = livro;
+        this.status = status;
     }
 
     public Livro getLivro() {

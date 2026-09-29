@@ -12,6 +12,6 @@ public interface ExemplarRepository extends JpaRepository<Exemplar, String> {
 
     public List<Exemplar> findByLivroId (String id);
 
-    @Query("SELECT MAX(e.codigo) from Exemplar e")
+    @Query("SELECT COALESCE(MAX(e.codigo), 1) FROM Exemplar e")
     public Integer buscaMaiorCodigo();
 }

@@ -51,9 +51,8 @@ public class LivroController {
             return ResponseEntity.ok(new ApiResponse<>(true, "Livro excluído com sucesso", livros));
     }
 
-    @Valid
     @PostMapping("/cadastro/exemplar")
-    public ResponseEntity<ApiResponse<List<ExemplarDTO>>> cadastroExemplares(ExemplarRequest request) {
+    public ResponseEntity<ApiResponse<List<ExemplarDTO>>> cadastroExemplares(@Valid @RequestBody ExemplarRequest request) {
         List<ExemplarDTO> exemplarDTO = livroService.cadastroExemplar(request);
 
         return ResponseEntity.ok(new ApiResponse<>(true, "Exemplares cadastrados com sucesso", exemplarDTO));
