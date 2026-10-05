@@ -10,7 +10,6 @@ public record EmprestimoDTO(
         @NotNull(message = "Necessário informar usuário para realizar o empréstimo") String idUsuario,
         @NotNull(message = "Necessário informar o livro para realizar o empréstimo") String idLivro,
         LocalDate dataEmprestimo,
-        @NotNull Local dataDevolução
+        LocalDate dataDevolução
 ) {
-    public EmprestimoDTO(Emprestimo)
 }
