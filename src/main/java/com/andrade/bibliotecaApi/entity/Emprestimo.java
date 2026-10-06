@@ -23,10 +23,10 @@ public class Emprestimo {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    @NotNull(message = "Livro é obrigatório")
+    @NotNull(message = "Exemplar é obrigatório")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_livro", nullable = false)
-    private Livro livro;
+    @JoinColumn(name = "id_exemplar_livro", nullable = false)
+    private Exemplar exemplar;
 
     @NotNull
     private LocalDate dataEmprestimo;
@@ -36,10 +36,10 @@ public class Emprestimo {
     protected Emprestimo() {
     }
 
-    public Emprestimo(Usuario usuario, Livro livro, LocalDate dataEmprestimo, LocalDate dataDevolucao) {
+    public Emprestimo(Usuario usuario, Exemplar exemplar, LocalDate dataEmprestimo, LocalDate dataDevolucao) {
         this.id = UUID.randomUUID().toString();
         this.usuario = usuario;
-        this.livro = livro;
+        this.exemplar = exemplar;
         this.dataEmprestimo = dataEmprestimo;
         this.dataDevolucao = dataDevolucao;
     }
@@ -60,12 +60,12 @@ public class Emprestimo {
         this.usuario = usuario;
     }
 
-    public Livro getLivro() {
-        return livro;
+    public Exemplar getExemplar() {
+        return exemplar;
     }
 
-    public void setLivro(Livro livro) {
-        this.livro = livro;
+    public void setExemplar(Exemplar exemplar) {
+        this.exemplar = exemplar;
     }
 
     public LocalDate getDataEmprestimo() {
