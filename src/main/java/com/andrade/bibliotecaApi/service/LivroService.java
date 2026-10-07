@@ -14,7 +14,7 @@ import com.andrade.bibliotecaApi.exceptions.UnprocessableException;
 import com.andrade.bibliotecaApi.repository.AutorRepository;
 import com.andrade.bibliotecaApi.repository.ExemplarRepository;
 import com.andrade.bibliotecaApi.repository.LivroRepository;
-import jakarta.persistence.NoResultException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class LivroService {
 
     public ResponseEntity<ApiResponse<LivroDTO>> cadastrarLivro(String titulo, int ano, String genero, String nomeAutor) {
         Autor autor = autorRepository.findByNome(nomeAutor)
-                .orElseThrow(() -> new NoResultException("Autor informado não localizado para cadastro do livro"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Autor informado não localizado para cadastro do livro"));
 
         livroRepository.save(new Livro(titulo, ano, genero, autor));
         LivroDTO dto = new LivroDTO(titulo, ano, genero, new AutorDTO(autor.getNome(), autor.getNacionalidade()));
@@ -47,9 +47,9 @@ public class LivroService {
     public LivroDTO consultaLivro(String id, String titulo) {
         Livro livro = null;
         if ((id != null && !id.isBlank())) {
-            livro = livroRepository.findById(id).orElseThrow(() -> new NoResultException("Livro não encontrado"));
+            livro = livroRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Livro não encontrado"));
         } else if (titulo != null && !titulo.isBlank()) {
-            livro = livroRepository.findByTitulo(titulo).orElseThrow(() -> new NoResultException("Livro não encontrado"));
+            livro = livroRepository.findByTitulo(titulo).orElseThrow(() -> new RecursoNaoEncontradoException("Livro não encontrado"));
         } else {
             throw new BadRequestException("Necessário informar ao menos um parâmetro para consulta");
         }
@@ -75,9 +75,9 @@ public class LivroService {
         Livro livro = null;
 
         if (id != null && !id.isBlank()) {
-            livro = livroRepository.findById(id).orElseThrow(() -> new NoResultException("Livro não encontrado"));
+            livro = livroRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Livro não encontrado"));
         } else if (titulo != null && !titulo.isBlank()) {
-            livro = livroRepository.findByTitulo(titulo).orElseThrow(() -> new NoResultException("Livro não encontrado"));
+            livro = livroRepository.findByTitulo(titulo).orElseThrow(() -> new RecursoNaoEncontradoException("Livro não encontrado"));
         } else {
             throw new BadRequestException("Necessário informar ao menos um parâmetro para consulta");
         }

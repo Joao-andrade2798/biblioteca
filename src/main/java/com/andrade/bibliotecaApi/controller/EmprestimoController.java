@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/biblioteca/emprestimo")
 public class EmprestimoController {
@@ -22,6 +24,13 @@ public class EmprestimoController {
         EmprestimoDTO emprestimoDTO = emprestimoService.registro(request);
 
         return ResponseEntity.ok(new ApiResponse<>(true, "Empréstimo registrado com sucesso", emprestimoDTO));
+    }
+
+    @PostMapping("/devolucao")
+    public ResponseEntity<ApiResponse<List<EmprestimoDTO>>> devolucaoExemplar (@Valid @RequestBody EmprestimoDTO request) {
+        List<EmprestimoDTO> emprestimoDTOS = emprestimoService.devolucao(request);
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "Devolução feita com sucesso", emprestimoDTOS));
     }
 
 }

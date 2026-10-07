@@ -1,7 +1,7 @@
 package com.andrade.bibliotecaApi.exceptions;
 
 import com.andrade.bibliotecaApi.dto.response.ApiResponse;
-import jakarta.persistence.NoResultException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,8 +18,8 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(false, exception.getLocalizedMessage(), null));
     }
 
-    @ExceptionHandler(NoResultException.class)
-    public ResponseEntity<ApiResponse<Object>> handleNotFound(NoResultException exception) {
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<ApiResponse<Object>> handleNotFound(RecursoNaoEncontradoException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse<>(false, exception.getLocalizedMessage(), null));
