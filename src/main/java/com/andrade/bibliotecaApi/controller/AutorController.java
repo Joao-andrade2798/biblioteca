@@ -20,6 +20,21 @@ public class AutorController {
     @Autowired
     private AutorService autorService;
 
+    @GetMapping("/listagem")
+    public ResponseEntity<ApiResponse<List<Autor>>> listarAutores() {
+        List<Autor> autores = autorService.listarAutores();
+        return ResponseEntity.ok(new ApiResponse<>(true, "Lista de Autores: ", autores));
+    }
+
+    @GetMapping("/consulta")
+    public ResponseEntity<ApiResponse<Autor>> consultaAutor(
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String nome
+    ) {
+        Autor autores = autorService.consultaAutor(id, nome);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Lista de Autores: ", autores));
+    }
+
     @PostMapping("/cadastro")
     public ResponseEntity<ApiResponse<Autor>> cadastroAutor(@Valid @RequestBody AutorDTO autorDto ) {
         try {
@@ -31,21 +46,6 @@ public class AutorController {
             ApiResponse<Autor> erro = new ApiResponse<>(false,"Erro ao cadastrar autor: " + e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erro);
         }
-    }
-
-    @GetMapping("/listagem")
-    public ResponseEntity<ApiResponse<List<Autor>>> listarAutores() {
-            List<Autor> autores = autorService.listarAutores();
-        return ResponseEntity.ok(new ApiResponse<>(true, "Lista de Autores: ", autores));
-    }
-
-    @GetMapping("/consulta")
-    public ResponseEntity<ApiResponse<Autor>> consultaAutor(
-            @RequestParam(required = false) String id,
-            @RequestParam(required = false) String nome
-    ) {
-        Autor autores = autorService.consultaAutor(id, nome);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Lista de Autores: ", autores));
     }
 
     @DeleteMapping("/exclusao")

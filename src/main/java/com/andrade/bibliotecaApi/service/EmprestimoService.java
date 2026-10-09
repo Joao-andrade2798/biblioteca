@@ -26,6 +26,16 @@ public class EmprestimoService {
     @Autowired
     ExemplarRepository exemplarRepository;
 
+    public List<EmprestimoDTO> consultaEmprestimos() {
+        return emprestimoRepository.buscarTodosEmprestimos().stream()
+                .map(e -> new EmprestimoDTO(
+                        e.getUsuario().getId(),
+                        e.getExemplar().getLivro().getId(),
+                        e.getDataEmprestimo(),
+                        e.getDataDevolucao()))
+                .toList();
+    }
+
     /**
     * Registra um empréstimo para o usuário e exemplar informado
     * <br>
@@ -50,6 +60,10 @@ public class EmprestimoService {
     return new EmprestimoDTO(emprestimo.getUsuario().getId(), emprestimo.getExemplar().getLivro().getId(), emprestimo.getDataEmprestimo(), emprestimo.getDataDevolucao());
     }
 
+    /**
+     * @param dto dto contendo dados do emprestimo
+     * @return em caso de sucesso retorna os exemplares que foram devolvidos
+     */
     public List<EmprestimoDTO> devolucao(EmprestimoDTO dto) {
         List<Emprestimo> emprestimos = emprestimoRepository.consultaEmprestimo(dto.idUsuario(), dto.idLivro());
         if (emprestimos.isEmpty()) {

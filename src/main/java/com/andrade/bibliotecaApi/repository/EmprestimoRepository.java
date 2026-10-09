@@ -13,9 +13,17 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, String> 
 
 @Query("""
         SELECT e FROM Emprestimo e
-        WHERE e.idUsuario = :idUsuario
+        WHERE e.usuario.id = :idUsuario
         AND e.exemplar.livro.id = :idLivro
         AND e.dataDevolucao IS NULL
         """)
 public List<Emprestimo> consultaEmprestimo(@Param("idUsuario") String idUsuario, @Param("idLivro") String idLivro);
+
+    @Query("""
+            SELECT e FROM Emprestimo e 
+            JOIN FETCH e.usuario 
+            JOIN FETCH e.exemplar ex
+            JOIN FETCH ex.livro
+            """)
+    List<Emprestimo> buscarTodosEmprestimos();
 }

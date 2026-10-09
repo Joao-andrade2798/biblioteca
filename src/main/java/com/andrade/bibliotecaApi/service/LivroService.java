@@ -10,6 +10,7 @@ import com.andrade.bibliotecaApi.entity.Exemplar;
 import com.andrade.bibliotecaApi.entity.Livro;
 import com.andrade.bibliotecaApi.enums.StatusExemplarEnum;
 import com.andrade.bibliotecaApi.exceptions.BadRequestException;
+import com.andrade.bibliotecaApi.exceptions.RecursoNaoEncontradoException;
 import com.andrade.bibliotecaApi.exceptions.UnprocessableException;
 import com.andrade.bibliotecaApi.repository.AutorRepository;
 import com.andrade.bibliotecaApi.repository.ExemplarRepository;
