@@ -77,6 +77,7 @@ public class EmprestimoService {
      * @param dto dto contendo dados do emprestimo
      * @return em caso de sucesso retorna os exemplares que foram devolvidos
      */
+    @Transactional
     public List<EmprestimoDTO> devolucao(EmprestimoDTO dto) {
         List<Emprestimo> emprestimos = emprestimoRepository.consultaEmprestimo(dto.idUsuario(), dto.idLivro());
         if (emprestimos.isEmpty()) {
@@ -87,11 +88,8 @@ public class EmprestimoService {
 
         for (Emprestimo emprestimo : emprestimos) {
             emprestimo.setDataDevolucao(hoje);
+            emprestimo.getExemplar().setStatus(StatusExemplarEnum.DISPONIVEL);
             exemplares.add(emprestimo.getExemplar());
-        }
-
-        for (Exemplar exemplar : exemplares) {
-         exemplar.setStatus(StatusExemplarEnum.DISPONIVEL);
         }
 
         emprestimoRepository.saveAll(emprestimos);

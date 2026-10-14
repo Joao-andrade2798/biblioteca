@@ -38,10 +38,13 @@ public List<Emprestimo> consultaEmprestimo(@Param("idUsuario") String idUsuario,
     public List<Emprestimo> buscarTodosEmprestimos();
 
     @Query("""
-        SELECT e FROM Emprestimo e
-        WHERE e.usuario.id = :idUsuario
-        AND e.dataDevolucao IS NULL
-        ORDER BY e.dataEmprestimo DESC, e.exemplar.livro.titulo
-        """)
+            SELECT e FROM Emprestimo e
+            JOIN FETCH e.usuario u
+            JOIN FETCH e.exemplar ex
+            JOIN FETCH ex.livro l
+            WHERE u.id = :idUsuario
+            AND e.dataDevolucao IS NULL
+            ORDER BY e.dataEmprestimo DESC, l.titulo
+            """)
     public List<Emprestimo> buscarEmprestimosAtivosPorUsuario(@Param("idUsuario") String idUsuario);
 }
