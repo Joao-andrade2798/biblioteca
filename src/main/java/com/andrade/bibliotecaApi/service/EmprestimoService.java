@@ -26,8 +26,21 @@ public class EmprestimoService {
     @Autowired
     ExemplarRepository exemplarRepository;
 
-    public List<EmprestimoDTO> consultaEmprestimos() {
+    public List<EmprestimoDTO> consultarTodosEmprestimos() {
         return emprestimoRepository.buscarTodosEmprestimos().stream()
+                .map(e -> new EmprestimoDTO(
+                        e.getUsuario().getId(),
+                        e.getExemplar().getLivro().getId(),
+                        e.getDataEmprestimo(),
+                        e.getDataDevolucao()))
+                .toList();
+    }
+
+    public List<EmprestimoDTO> consultarEmprestimosPorUsuario(String idUsuario) {
+        usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário informado não encontrado"));
+
+        return emprestimoRepository.buscarEmprestimosAtivosPorUsuario(idUsuario).stream()
                 .map(e -> new EmprestimoDTO(
                         e.getUsuario().getId(),
                         e.getExemplar().getLivro().getId(),

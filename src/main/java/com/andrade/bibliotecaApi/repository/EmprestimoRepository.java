@@ -11,11 +11,20 @@ import java.util.List;
 
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, String> {
 
+    /**
+     * Consulta os empréstimos ativos (ainda não devolvidos) de um usuário para um livro,
+     * ordenados do mais recente para o mais antigo.
+     *
+     * @param idUsuario id do usuário
+     * @param idLivro   id do livro
+     * @return lista de empréstimos ativos; vazia se não houver nenhum
+     */
 @Query("""
         SELECT e FROM Emprestimo e
         WHERE e.usuario.id = :idUsuario
         AND e.exemplar.livro.id = :idLivro
         AND e.dataDevolucao IS NULL
+        ORDER BY e.dataEmprestimo DESC
         """)
 public List<Emprestimo> consultaEmprestimo(@Param("idUsuario") String idUsuario, @Param("idLivro") String idLivro);
 
@@ -24,6 +33,15 @@ public List<Emprestimo> consultaEmprestimo(@Param("idUsuario") String idUsuario,
             JOIN FETCH e.usuario 
             JOIN FETCH e.exemplar ex
             JOIN FETCH ex.livro
+            ORDER BY e.dataEmprestimo DESC, e.usuario.id
             """)
-    List<Emprestimo> buscarTodosEmprestimos();
+    public List<Emprestimo> buscarTodosEmprestimos();
+
+    @Query("""
+        SELECT e FROM Emprestimo e
+        WHERE e.usuario.id = :idUsuario
+        AND e.dataDevolucao IS NULL
+        ORDER BY e.dataEmprestimo DESC, e.exemplar.livro.titulo
+        """)
+    public List<Emprestimo> buscarEmprestimosAtivosPorUsuario(@Param("idUsuario") String idUsuario);
 }
