@@ -6,6 +6,7 @@ import com.andrade.bibliotecaApi.entity.Exemplar;
 import com.andrade.bibliotecaApi.entity.Usuario;
 import com.andrade.bibliotecaApi.enums.StatusExemplarEnum;
 import com.andrade.bibliotecaApi.exceptions.RecursoNaoEncontradoException;
+import com.andrade.bibliotecaApi.exceptions.UnprocessableException;
 import com.andrade.bibliotecaApi.repository.EmprestimoRepository;
 import com.andrade.bibliotecaApi.repository.ExemplarRepository;
 import com.andrade.bibliotecaApi.repository.UsuarioRepository;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +29,7 @@ public class EmprestimoService {
     public List<EmprestimoDTO> consultarTodosEmprestimos() {
         return emprestimoRepository.buscarTodosEmprestimos().stream()
                 .map(e -> new EmprestimoDTO(
+                        e.getId(),
                         e.getUsuario().getId(),
                         e.getExemplar().getLivro().getId(),
                         e.getDataEmprestimo(),
@@ -42,6 +43,7 @@ public class EmprestimoService {
 
         return emprestimoRepository.buscarEmprestimosAtivosPorUsuario(idUsuario).stream()
                 .map(e -> new EmprestimoDTO(
+                        e.getId(),
                         e.getUsuario().getId(),
                         e.getExemplar().getLivro().getId(),
                         e.getDataEmprestimo(),
@@ -70,34 +72,26 @@ public class EmprestimoService {
 
     Emprestimo emprestimo = emprestimoRepository.save(new Emprestimo(usuario, exemplar, LocalDate.now(), null));
     exemplar.setStatus(StatusExemplarEnum.EMPRESTADO);
-    return new EmprestimoDTO(emprestimo.getUsuario().getId(), emprestimo.getExemplar().getLivro().getId(), emprestimo.getDataEmprestimo(), emprestimo.getDataDevolucao());
+    return new EmprestimoDTO(emprestimo.getId(), emprestimo.getUsuario().getId(), emprestimo.getExemplar().getLivro().getId(), emprestimo.getDataEmprestimo(), emprestimo.getDataDevolucao());
     }
 
     /**
-     * @param dto dto contendo dados do emprestimo
-     * @return em caso de sucesso retorna os exemplares que foram devolvidos
+     * @param id Refere-se ao id do empréstimo
+     * @return em caso de sucesso retorna o exemplar que foi devolvido
      */
     @Transactional
-    public List<EmprestimoDTO> devolucao(EmprestimoDTO dto) {
-        List<Emprestimo> emprestimos = emprestimoRepository.consultaEmprestimo(dto.idUsuario(), dto.idLivro());
-        if (emprestimos.isEmpty()) {
-            throw new RecursoNaoEncontradoException("Nenhum empréstimo ativo encontrado");
+    public EmprestimoDTO devolucao(String id) {
+        Emprestimo emprestimo = emprestimoRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Nenhum empréstimo ativo encontrado"));
+
+        if (emprestimo.getDataDevolucao() != null) {
+            throw new UnprocessableException("Empréstimo já foi devolvido");
         }
+
         LocalDate hoje = LocalDate.now();
-        List<Exemplar> exemplares = new ArrayList<>();
 
-        for (Emprestimo emprestimo : emprestimos) {
-            emprestimo.setDataDevolucao(hoje);
-            emprestimo.getExemplar().setStatus(StatusExemplarEnum.DISPONIVEL);
-            exemplares.add(emprestimo.getExemplar());
-        }
+        emprestimo.setDataDevolucao(hoje);
+        emprestimo.getExemplar().setStatus(StatusExemplarEnum.DISPONIVEL);
 
-        emprestimoRepository.saveAll(emprestimos);
-        exemplarRepository.saveAll(exemplares);
-
-        return emprestimos
-                .stream()
-                .map(e -> new EmprestimoDTO(e.getUsuario().getId(), e.getExemplar().getLivro().getId(), e.getDataEmprestimo(), e.getDataDevolucao()))
-                .toList();
+        return new EmprestimoDTO(emprestimo.getId(), emprestimo.getUsuario().getId(), emprestimo.getExemplar().getLivro().getId(), emprestimo.getDataEmprestimo(), hoje);
     }
 }
