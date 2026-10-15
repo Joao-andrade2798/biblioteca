@@ -3,6 +3,7 @@ package com.andrade.bibliotecaApi.controller;
 import com.andrade.bibliotecaApi.dto.response.ApiResponse;
 import com.andrade.bibliotecaApi.dto.response.EmprestimoDTO;
 import com.andrade.bibliotecaApi.service.EmprestimoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@Tag(name = "Empréstimo", description = "Registro e devolução de empréstimos")
+@RestController
 @RequestMapping("/biblioteca/emprestimo")
 @Validated
 public class EmprestimoController {

@@ -4,6 +4,7 @@ import com.andrade.bibliotecaApi.dto.response.ApiResponse;
 import com.andrade.bibliotecaApi.dto.response.UsuarioDTO;
 import com.andrade.bibliotecaApi.entity.Usuario;
 import com.andrade.bibliotecaApi.service.UsuarioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@Tag(name = "Usuário", description = "Gerenciamento de usuários")
+@RestController
 @RequestMapping("/biblioteca/usuario")
 public class UsuarioController {
     @Autowired

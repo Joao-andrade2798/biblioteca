@@ -5,6 +5,7 @@ import com.andrade.bibliotecaApi.dto.response.ApiResponse;
 import com.andrade.bibliotecaApi.dto.response.ExemplarDTO;
 import com.andrade.bibliotecaApi.dto.response.LivroDTO;
 import com.andrade.bibliotecaApi.service.LivroService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@Tag(name = "Livro", description = "Serviços relacionados aos Livros")
+@RestController
 @RequestMapping("/biblioteca/livro")
 public class LivroController {
 

@@ -4,6 +4,7 @@ import com.andrade.bibliotecaApi.dto.response.ApiResponse;
 import com.andrade.bibliotecaApi.dto.response.AutorDTO;
 import com.andrade.bibliotecaApi.entity.Autor;
 import com.andrade.bibliotecaApi.service.AutorService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@Tag(name = "Autor", description = "Serviços relacionados ao Autor")
+@RestController
 @RequestMapping("/biblioteca/autor")
 public class AutorController {
 
